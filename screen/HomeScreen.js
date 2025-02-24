@@ -8,33 +8,80 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { COLORS, SIZES } from "../constant/style";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import dummyData from "../constant/store";
-import { useNavigation } from "@react-navigation/native";
+import doaQueries from "../database/doaQueries";
+import { useFocusEffect } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 const HomeScreen = ({ navigation }) => {
-  const renderCategoryItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.categoryCard}
-      onPress={() =>
-        navigation.navigate("ContentEach", {
-          category: item,
-          title: item.title,
-        })
+  const { getCategories, initializeData, resetDatabase } = doaQueries();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    async function setupData() {
+      await initializeData();
+    }
+    setupData();
+    
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      async function loadData() {
+        try {
+          const fetchedCategories = await getCategories();
+          setCategories(fetchedCategories);
+        } catch (err) {
+          console.log("error get ", err);
+        }
       }
-    >
-      <View style={styles.iconContainer}>
-        <Image source={item.icon} style={styles.icon} resizeMode="contain" />
-      </View>
-      <Text style={styles.categoryTitle}>{item.title}</Text>
-      <Text style={styles.categoryDescription}>{item.description}</Text>
-    </TouchableOpacity>
+
+      loadData();
+
+      return () => {
+
+      };
+    }, [getCategories])
   );
+
+  const iconMap = {
+    petunjuk: require("../assets/Icon/petunjuk.png"),
+    keberkahan: require("../assets/Icon/keberkahan.png"),
+    ampunan: require("../assets/Icon/ampunan.png"),
+    keluarga: require("../assets/Icon/keluarga.png"),
+    keamanan: require("../assets/Icon/keamanan.png"),
+  };
+
+  const renderCategoryItem = ({ item }) => {
+    const iconSource = iconMap[item.icon];
+    return (
+      <TouchableOpacity
+        style={styles.categoryCard}
+        onPress={() =>
+          navigation.navigate("ContentEach", {
+            category: item.id,
+            title: item.title,
+          })
+        }
+      >
+        <View style={styles.iconContainer}>
+          <Image
+            source={iconSource}
+            style={styles.icon}
+            resizeMode="contain"
+          />
+        </View>
+        <Text style={styles.categoryTitle}>{item.title}</Text>
+        <Text style={styles.categoryDescription}>{item.description}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
+      <StatusBar translucent/>
       <Pressable
         style={styles.searchContainer}
         onPress={() => navigation.navigate("Search")}
@@ -80,7 +127,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
       </View>
       <FlatList
-        data={dummyData.categories}
+        data={categories}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCategoryItem}
         numColumns={2}

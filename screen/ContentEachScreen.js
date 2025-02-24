@@ -4,34 +4,42 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { COLORS, SIZES } from "../constant/style";
+import doaQueries from "../database/doaQueries";
 
-const ContentEachScreen = ({ route, navigation }) => {
+const ContentEachScreen = ({ route, navigation }) => { 
+  const { getDoasByCategory } = doaQueries();
+  const { category: categoryId } = route.params;
+  const [doas, setDoas] = useState([]);
 
-  const { category } = route.params;
-  // navigation.setOptions({
-  //   headerTitle: () => (
-  //     <Text style={{ fontSize: SIZES.large, fontWeight: 'bold', color: COLORS.primary, marginLeft: 20 }}>
-  //       {category.title} 
-  //     </Text>
-  //   ),
-  // });
+  useEffect(() => {
+    async function loadDoas() {
+      try {
+        const fetchedDoas = await getDoasByCategory(categoryId);
+        setDoas(fetchedDoas);
+      } catch (err) {
+        console.error("Error getting doas:", err);
+      }
+    }
 
+    loadDoas();
+  }, [categoryId, getDoasByCategory]);
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={category.doas}
+        data={doas}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() => navigation.navigate("DoaDetail", { doa: item })}
           >
             <LinearGradient
-              colors={["#E2FFFC", "	rgba(226, 255, 252, 0.5)", "white"]}
+              colors={["#E2FFFC", " rgba(226, 255, 252, 0.5)", "white"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.card}

@@ -1,35 +1,45 @@
 import React, { useEffect, useState } from "react";
-import {
-  addFavoriteDoa,
-  removeFavoriteDoa,
-  isDoaFavorite,
-} from "../constant/storage";
+// import {
+//   addFavoriteDoa,
+//   removeFavoriteDoa,
+//   isDoaFavorite,
+// } from "../constant/storage"; //asyncstorage
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constant/style";
 import { LinearGradient } from "expo-linear-gradient";
 import Slider from "@react-native-community/slider";
+import doaQueries from "../database/doaQueries";
 
 const DetailDoaScreen = ({ route, navigation }) => {
   const { doa } = route.params;
+  const { getFavorites, addFavorite, removeFavorite } = doaQueries();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const checkFavoriteStatus = async () => {
-      const favorite = await isDoaFavorite(doa.id);
-      setIsFavorite(favorite);
+      const favorites = await getFavorites();
+      const isDoaInFavorites = favorites.some(favDoa => favDoa.id === doa.id);
+      setIsFavorite(isDoaInFavorites);
+      // const favorite = await isDoaFavorite(doa.id); //Async storage
     };
     checkFavoriteStatus();
-  }, []);
+  }, [doa.id, getFavorites]);
 
   const toggleFavorite = async () => {
-    if (isFavorite) {
-      await removeFavoriteDoa(doa.id);
-    } else {
-      await addFavoriteDoa(doa);
+    try {
+      if (isFavorite) {
+        await removeFavorite(doa.id);
+        // await removeFavoriteDoa(doa.id); //Async storage
+      } else {
+        await addFavorite(doa.id);
+        // await addFavoriteDoa(doa); //Async storage
+      }
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
     }
-    setIsFavorite(!isFavorite);
   };
 
   return (

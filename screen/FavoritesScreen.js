@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { getFavoriteDoas } from '../constant/storage';
+// import { getFavoriteDoas } from '../constant/storage'; //Async storage
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../constant/style';
+import doaQueries from '../database/doaQueries';
 
 const FavoritesScreen = ({navigation}) => {
+  const { getFavorites } = doaQueries();
   const [favoriteDoas, setFavoriteDoas] = useState([]);
 
   useEffect(() => {
     const fetchFavorites = async () => {
-      const favorites = await getFavoriteDoas();
-      setFavoriteDoas(favorites);
+      try {
+        // const favorites = await getFavoriteDoas(); //Async Storage
+        // setFavoriteDoas(favorites);
+        const favorites = await getFavorites();
+        setFavoriteDoas(favorites);
+      } catch (error) {
+        console.error("Error fetching favorites:", error);
+      }
     };
     fetchFavorites();
   }, []);

@@ -9,12 +9,17 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.awriyou.Qusyu"
+      "bundleIdentifier": "com.awriyou.Qusyu",
+      "icon": {
+        "light": "./assets/ic/Light.png",
+        "dark": "./assets/ic/Dark.png",
+        "tinted": "./assets/ic/Tinted.png"
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/ic/adaptive-icon.png",
+        "backgroundColor": "#12B09F"
       },
       "package": "com.awriyou.Qusyu"
     },
@@ -25,6 +30,21 @@
       "eas": {
         "projectId": "f3112ae7-69ba-46b8-b4b3-90dc62dc8382"
       }
-    }
+    },
+    "plugins": [
+      "expo-sqlite",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#12B09F",
+          "image": "./assets/ic/splash-icon-light.png",
+          "dark": {
+            "image": "./assets/ic/splash-icon-dark.png",
+            "backgroundColor": "#12B09F"
+          },
+          "imageWidth": 200
+        }
+      ]
+    ]
   }
 }
