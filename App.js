@@ -16,8 +16,6 @@ import { SQLiteProvider } from "expo-sqlite";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-
-
   return (
     <SQLiteProvider databaseName="doa.db" onInit={initializeDatabase}>
     <NavigationContainer>
