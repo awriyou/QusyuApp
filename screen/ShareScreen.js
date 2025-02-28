@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   dotContainer: {
     flexDirection: "row",
     position: "absolute",
-    bottom: SIZES.height * 0.1, 
+    bottom: SIZES.height * 0.15, 
     alignSelf: "center",
     zIndex: 10,
   },
