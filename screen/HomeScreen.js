@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { COLORS, SIZES } from "../constant/style";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons, Fontisto } from "@expo/vector-icons";
 import doaQueries from "../database/doaQueries";
 import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
@@ -18,14 +18,27 @@ import { StatusBar } from "expo-status-bar";
 const HomeScreen = ({ navigation }) => {
   const { getCategories, initializeData, resetDatabase } = doaQueries();
   const [categories, setCategories] = useState([]);
+  const [isMenuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     async function setupData() {
       await initializeData();
     }
     setupData();
-    
-  }, []);
+  
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ flexDirection: "row", gap: 10 }}>
+        <TouchableOpacity onPressIn={() => navigation.navigate("favorite")}>
+          <Fontisto name="heart-alt" size={24} color={COLORS.font} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setMenuVisible((prev) => !prev)}>
+          <Feather name="more-vertical" size={24} color={COLORS.font} style={{ marginRight: 5 }} />
+        </TouchableOpacity>
+        </View>
+      ),
+    });
+  }, [navigation]);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,12 +59,17 @@ const HomeScreen = ({ navigation }) => {
     }, [getCategories])
   );
 
+  const handleMenuPress = (screen) => {
+    setMenuVisible(false); 
+    navigation.navigate(screen);
+  };
+
   const iconMap = {
-    petunjuk: require("../assets/Icon/petunjuk.png"),
-    keberkahan: require("../assets/Icon/keberkahan.png"),
-    ampunan: require("../assets/Icon/ampunan.png"),
-    keluarga: require("../assets/Icon/keluarga.png"),
-    keamanan: require("../assets/Icon/keamanan.png"),
+    petunjuk: require("../assets/iconCategory/petunjuk.png"),
+    keberkahan: require("../assets/iconCategory/keberkahan.png"),
+    ampunan: require("../assets/iconCategory/ampunan.png"),
+    keluarga: require("../assets/iconCategory/keluarga.png"),
+    keamanan: require("../assets/iconCategory/keamanan.png"),
   };
 
   const renderCategoryItem = ({ item }) => {
@@ -82,6 +100,17 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar translucent/>
+      {isMenuVisible && (
+        <View style={styles.dropdownMenu}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => handleMenuPress("About")}>
+            <Text style={styles.menuText}>About</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => console.log("Report")}>
+            <Text style={styles.menuText}>Report</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      
       <Pressable
         style={styles.searchContainer}
         onPress={() => navigation.navigate("Search")}
@@ -121,7 +150,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
         <View style={styles.imageSabit}>
           <Image
-            source={require("../assets/Icon/sabit.png")}
+            source={require("../assets/iconCategory/sabit.png")}
             style={{ width: 200, height: 200 }}
           />
         </View>
@@ -211,6 +240,10 @@ const styles = StyleSheet.create({
     top: -10,
   },
 
+  icon:{
+    width: 70,
+    height: 80,
+  },
   categoryList: {
     justifyContent: "flex-start",
     paddingVertical: 20,
@@ -236,5 +269,30 @@ const styles = StyleSheet.create({
   categoryDescription: {
     color: COLORS.font,
     fontWeight: "400",
+  },
+
+  dropdownMenu: {
+    position: "absolute",
+    top: 10, 
+    right: 20,
+    zIndex: 99,
+    backgroundColor: "white",
+    borderRadius: 10,
+    paddingVertical: 10,
+    width: 180,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  menuItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+  },
+  menuText: {
+    fontSize: SIZES.medium,
+    fontWeight: "500",
+    color: COLORS.primary,
   },
 });

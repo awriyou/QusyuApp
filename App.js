@@ -12,6 +12,7 @@ import { COLORS, SIZES } from "./constant/style";
 import { Fontisto, Entypo, AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity, View, Text } from "react-native";
 import { SQLiteProvider } from "expo-sqlite";
+import AboutScreen from "./screen/AboutScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,16 +35,6 @@ export default function App() {
               color: COLORS.primary,
             },
             headerShadowVisible: false,
-            headerRight: () => (
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                <TouchableOpacity onPressIn={() => navigation.navigate("favorite")}>
-                  <Fontisto name="heart-alt" size={24} color={COLORS.font} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => console.log("Dot pressed")}> 
-                  <Entypo name="dots-three-vertical" size={24} color={COLORS.font} />
-                </TouchableOpacity>
-              </View>
-            ),
           })}
         />
         <Stack.Screen
@@ -131,6 +122,20 @@ export default function App() {
             headerLeft: () => (
               <TouchableOpacity onPressIn={() => navigation.goBack()}>
                 <AntDesign name="left" size={24} color={COLORS.primary} />
+              </TouchableOpacity>
+            ),
+            headerShadowVisible: false,
+          })}
+        />
+        <Stack.Screen
+          name="About"
+          component={AboutScreen}
+          options={({ navigation }) => ({
+            headerStyle: { backgroundColor: COLORS.font2 },
+            headerTitle: "",
+            headerLeft: () => (
+              <TouchableOpacity onPressIn={() => navigation.goBack()}>
+                <AntDesign name="close" size={30} color="white" />
               </TouchableOpacity>
             ),
             headerShadowVisible: false,

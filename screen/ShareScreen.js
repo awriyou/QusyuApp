@@ -98,7 +98,7 @@ const ShareScreen = ({ route, navigation }) => {
       <Carousel
         loop
         width={SIZES.width * 0.9}
-        height={SIZES.height * 0.8}
+        height={SIZES.height * 1}
         data={themes}
         scrollAnimationDuration={1000}
         onSnapToItem={(index) => setCurrentIndex(index)}
@@ -116,6 +116,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
   container: {
     width: SIZES.width * 0.9,
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     fontWeight: "400",
     color: "white",
-    textAlign: "right",
+    textAlign: "center",
   },
   headerButton: {
     padding: 10,
@@ -173,15 +175,18 @@ const styles = StyleSheet.create({
   dotContainer: {
     flexDirection: "row",
     position: "absolute",
-    bottom: SIZES.height * 0.15, 
+    bottom: "15%", 
     alignSelf: "center",
     zIndex: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 20,
   },
   dot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
     marginHorizontal: 5,
   },
   dotActive: {
